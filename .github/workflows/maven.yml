@@ -28,7 +28,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, windows-latest, macos-latest]
+        os: [ubuntu-22.04, windows-2022, macos-12]
         java: [ 8, 11, 17 ]
         experimental: [false]
 #        include:
@@ -53,3 +53,11 @@ jobs:
     - name: Build with Maven
       # TEMP -Ddoclint=none
       run: mvn -V --file pom.xml --no-transfer-progress -Ddoclint=none -Darguments=-Xdoclint:none
+
+    # Upload jar only on ubuuntu java 8
+    - name: "Upload jars"
+      if: ${{ matrix.os == 'ubuntu-22.04' && matrix.java == 8 }}
+      uses: actions/upload-artifact@v4
+      with:
+        name: "jars"
+        path: "**/*.jar"
